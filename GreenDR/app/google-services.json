@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "557783205680",
+    "firebase_url": "https://greendr-e6125.firebaseio.com",
+    "project_id": "greendr-e6125",
+    "storage_bucket": "greendr-e6125.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557783205680:android:6c20736636c9ce19032af5",
+        "android_client_info": {
+          "package_name": "com.example.greendr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557783205680-cdta6d7k09tesado7nchfjkrmjkoae9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.greendr",
+            "certificate_hash": "945c38147c781380efce9a5acba4eb09e75002a5"
+          }
+        },
+        {
+          "client_id": "557783205680-oq9moeh0o95kigrjf5b2hkdadgom8bdj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoe9lyXwnDqseYoaiCq2Zmu05I4aohYmM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "557783205680-oq9moeh0o95kigrjf5b2hkdadgom8bdj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
