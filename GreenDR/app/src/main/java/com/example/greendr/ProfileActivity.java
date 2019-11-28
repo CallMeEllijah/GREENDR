@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,7 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
         //setting of local variables
         auth = FirebaseAuth.getInstance();
         userID = auth.getCurrentUser().getUid();
-        String userSex = getIntent().getExtras().getString("sex");
+        String userSex = getIntent().getExtras().getString("userSex");
+
         userDB = FirebaseDatabase.getInstance().getReference().child("Users").child(userSex).child(userID);
 
         //getInfo will get everything else na data and set them into the mobile app
@@ -130,40 +132,50 @@ public class ProfileActivity extends AppCompatActivity {
         info.put("bio", localbio);
         userDB.updateChildren(info);
 
-        final StorageReference path = FirebaseStorage.getInstance().getReference().child("dpimg").child(userID);
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        //if may pic na dont save
+
+        if(uri != null){
+            final StorageReference path = FirebaseStorage.getInstance().getReference().child("dpimg").child(userID);
+
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            ByteArrayOutputStream temp = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, temp);
+            byte[] data = temp.toByteArray();
+            UploadTask uploadTask = path.putBytes(data);
+
+            uploadTask.addOnFailureListener(new OnFailureListener(){
+                @Override
+                public void onFailure(@NonNull Exception e){
+                    finish();
+                }
+            });
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    path.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Map inf = new HashMap();
+                            inf.put("imgUrl", uri.toString());
+                            userDB.updateChildren(inf);
+                            finish();
+                            return;
+                        }
+                    });
+                }
+            });
+        }else{
+            finish();
+            return;
         }
 
-        ByteArrayOutputStream temp = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, temp);
-        byte[] data = temp.toByteArray();
-        UploadTask uploadTask = path.putBytes(data);
-
-        uploadTask.addOnFailureListener(new OnFailureListener(){
-            @Override
-            public void onFailure(@NonNull Exception e){
-                finish();
-            }
-        });
-
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                path.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Map inf = new HashMap();
-                        inf.put("imgUrl", uri.toString());
-                        userDB.updateChildren(inf);
-                        finish();
-                        return;
-                    }
-                });
-            }
-        });
     }
 }
