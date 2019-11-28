@@ -133,8 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
         userDB.updateChildren(info);
 
 
-        //if may pic na dont save
-
+        //this just checks if user nag upload ba or not kasi if di nagupload user, saving ur name twice will fuck up an error kasi uri empty
         if(uri != null){
             final StorageReference path = FirebaseStorage.getInstance().getReference().child("dpimg").child(userID);
 
